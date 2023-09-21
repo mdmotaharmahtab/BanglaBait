@@ -5,7 +5,7 @@ data_column: title
 label_column: label
 ratio: 100
 device: cuda
-epochs: 3
+epochs: 20
 epsilon: 1.0e-08
 learning_rate_discriminator: 1.0e-05
 learning_rate_generator: 1.0e-05

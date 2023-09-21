@@ -32,7 +32,7 @@ def nn_save_model(save_path:str,model,optimizer):
         }, save_path)
 
 class CNN(nn.Module):
-	def __init__(self, embedding_tensors: Tensor, 
+    def __init__(self, embedding_tensors: Tensor, 
               config: object, 
               class_weights: List[float] = None):
 
@@ -62,31 +62,31 @@ class CNN(nn.Module):
         and produces class logits.
         """
 
-		super(CNN, self).__init__()
+        super(CNN, self).__init__()
         self.batch_size = config.batch_size
-		self.output_size = config.output_dim
-		self.in_channels = config.model['in_channels']
-		self.out_channels = config.model['out_channels']
-		self.kernel_heights = config.model['kernel_heights']
-		self.stride = config.model['stride']
-		self.padding = config.model['padding']
-		self.word_embeddings = nn.Embedding.from_pretrained(embedding_tensors, 
-                                                      padding_idx = self.padding,
-                                                      freeze = config.update_embedding)
-		self.embedding_length = self.word_embeddings.weight.shape[-1]
-		self.vocab_size = self.word_embeddings.weight.shape[0]
-		
-		self.conv1 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[0], self.embedding_length), self.stride, self.padding)
-		self.conv2 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[1], self.embedding_length), self.stride, self.padding)
-		self.conv3 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[2], self.embedding_length), self.stride, self.padding)
-		self.conv4 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[3], self.embedding_length), self.stride, self.padding)
-		self.dropout = nn.Dropout(config.model['keep_probab'])
-		self.label = nn.Linear(len(self.kernel_heights)*self.out_channels, self.output_size)
+        self.output_size = config.output_dim
+        self.in_channels = config.model['in_channels']
+        self.out_channels = config.model['out_channels']
+        self.kernel_heights = config.model['kernel_heights']
+        self.stride = config.model['stride']
+        self.padding = config.model['padding']
+        self.word_embeddings = nn.Embedding.from_pretrained(embedding_tensors, 
+                                                        padding_idx = self.padding,
+                                                        freeze = config.update_embedding)
+        self.embedding_length = self.word_embeddings.weight.shape[-1]
+        self.vocab_size = self.word_embeddings.weight.shape[0]
 
-		if config.use_class_weight:
-			self.loss_func = nn.CrossEntropyLoss(weight=class_weights)
-		else:
-			self.loss_func = nn.CrossEntropyLoss()
+        self.conv1 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[0], self.embedding_length), self.stride, self.padding)
+        self.conv2 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[1], self.embedding_length), self.stride, self.padding)
+        self.conv3 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[2], self.embedding_length), self.stride, self.padding)
+        self.conv4 = nn.Conv2d(self.in_channels, self.out_channels, (self.kernel_heights[3], self.embedding_length), self.stride, self.padding)
+        self.dropout = nn.Dropout(config.model['keep_probab'])
+        self.label = nn.Linear(len(self.kernel_heights)*self.out_channels, self.output_size)
+
+        if config.use_class_weight:
+            self.loss_func = nn.CrossEntropyLoss(weight=class_weights)
+        else:
+            self.loss_func = nn.CrossEntropyLoss()
 
 
     def conv_block(self, input, conv_layer):
@@ -105,13 +105,13 @@ class CNN(nn.Module):
 
         """
 
-		conv_out = conv_layer(input)  # conv_out.size() = (batch_size, out_channels, dim, 1)
-		activation = F.relu(conv_out.squeeze(3))  # activation.size() = (batch_size, out_channels, dim1)
-		max_out = F.max_pool1d(activation, activation.size()[2]).squeeze(2)
+        conv_out = conv_layer(input)  # conv_out.size() = (batch_size, out_channels, dim, 1)
+        activation = F.relu(conv_out.squeeze(3))  # activation.size() = (batch_size, out_channels, dim1)
+        max_out = F.max_pool1d(activation, activation.size()[2]).squeeze(2)
 
-		return max_out
+        return max_out
 
- 	def forward(self, input_sentences, text_lengths):
+    def forward(self, input_sentences, text_lengths):
         """
         Forward pass of the Convolutional Neural Network (CNN).
         This method performs a forward pass of the CNN model. It takes input sentences,
@@ -126,18 +126,18 @@ class CNN(nn.Module):
     
         """
 
-		input = self.word_embeddings(input_sentences)
-		input = input.permute(1, 0, 2)
-		input = input.unsqueeze(1)
-		max_out1 = self.conv_block(input, self.conv1)
-		max_out2 = self.conv_block(input, self.conv2)
-		max_out3 = self.conv_block(input, self.conv3)
-		max_out4 = self.conv_block(input, self.conv4)
-		all_out = torch.cat((max_out1, max_out2, max_out3, max_out4), 1)
-		fc_in = self.dropout(all_out)
-		logits = self.label(fc_in)
+        input = self.word_embeddings(input_sentences)
+        input = input.permute(1, 0, 2)
+        input = input.unsqueeze(1)
+        max_out1 = self.conv_block(input, self.conv1)
+        max_out2 = self.conv_block(input, self.conv2)
+        max_out3 = self.conv_block(input, self.conv3)
+        max_out4 = self.conv_block(input, self.conv4)
+        all_out = torch.cat((max_out1, max_out2, max_out3, max_out4), 1)
+        fc_in = self.dropout(all_out)
+        logits = self.label(fc_in)
 
-		return logits
+        return logits
 
 
 class ClickbaitLSTM(nn.Module):

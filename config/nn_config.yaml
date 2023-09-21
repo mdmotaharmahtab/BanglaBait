@@ -18,13 +18,13 @@ cnn:
   keep_probab : 0.8
 
 learning_rate : !!float 2e-05
-batch_size : 512
+batch_size : 64
 
 embedding: fasttext
 embedding_path: embedding/bengali_fasttext_wiki.bin
 update_embedding: false
 load_embedding_path: embedding/embedding_weights_fasttext.pt
-epochs : 5
+epochs : 20
 device : cuda
 output_path: output/lstm_fasttext
 data_dir: dataset/data/clickbait
