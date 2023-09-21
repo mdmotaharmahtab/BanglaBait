@@ -1,0 +1,15 @@
+LR:
+  C: 10
+  penalty: l2
+  solver: liblinear
+RF:
+  criterion: gini
+  max_depth: 100
+  max_features: sqrt
+  n_estimators: 700
+data_column: title
+data_dir: dataset/data/clickbait
+feature: allfeatures
+label_column: label
+model_type: LR
+save_model: true

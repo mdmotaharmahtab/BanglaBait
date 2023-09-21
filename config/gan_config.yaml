@@ -1,0 +1,23 @@
+model_type: gan
+batch_size: 64
+data_dir: dataset/data/clickbait
+data_column: title
+label_column: label
+ratio: 100
+device: cuda
+epochs: 3
+epsilon: 1.0e-08
+learning_rate_discriminator: 1.0e-05
+learning_rate_generator: 1.0e-05
+warmup_proportion: 0.1
+num_hidden_layers_d: 2
+num_hidden_layers_g: 2
+out_dropout_rate: 0.5
+model_name_or_path: csebuetnlp/banglabert
+tokenizer_class: AutoTokenizer
+label_list:
+- 0
+- 1
+- 2
+output_path: output/gan_banglabert
+

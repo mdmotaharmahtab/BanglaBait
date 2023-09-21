@@ -1,0 +1,16 @@
+batch_size: 64
+data_dir: dataset/data/clickbait
+data_column: title
+label_column: label
+device: cuda
+epochs: 3
+label_list:
+- 0
+- 1
+learning_rate: 1.0e-05
+model_name_or_path: csebuetnlp/banglabert
+model_type: transformer
+out_dropout_rate: 0.5
+output_path: output/transformer_banglabert
+tokenizer_class: AutoTokenizer
+warmup_proportion: 0.1

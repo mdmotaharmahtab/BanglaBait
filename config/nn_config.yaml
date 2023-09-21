@@ -1,0 +1,33 @@
+model_type: lstm
+use_class_weight: true
+
+lstm:
+  use_attention: true
+  out_dropout_rate : 0.5
+  lstm_hidden_dim: 256
+  lstm_layers: 2
+  bidirectional: true
+  pad_idx : 0
+  
+cnn:
+  in_channels : 1
+  out_channels : 256
+  kernel_heights : [1, 2, 3, 4]
+  stride : 1
+  padding : 0
+  keep_probab : 0.8
+
+learning_rate : !!float 2e-05
+batch_size : 512
+
+embedding: fasttext
+embedding_path: embedding/bengali_fasttext_wiki.bin
+update_embedding: false
+load_embedding_path: embedding/embedding_weights_fasttext.pt
+epochs : 5
+device : cuda
+output_path: output/lstm_fasttext
+data_dir: dataset/data/clickbait
+data_column: title
+label_column: label
+label_list: [0,1]
